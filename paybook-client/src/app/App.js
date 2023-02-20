@@ -1,13 +1,21 @@
 import "./App.css";
 
 import AppHeader from "../common/AppHeader";
+import Login from "../user/login/Login";
 
 import { Layout } from "antd";
+import { Outlet } from "react-router-dom";
+
+const { Content } = Layout;
 
 export default function App() {
   return (
     <Layout className="app-container">
-      <AppHeader></AppHeader>
+      <AppHeader />
+      <Content className="app-content"></Content>
+      <div className="container">
+        <Outlet />
+      </div>
     </Layout>
   );
 }

@@ -11,8 +11,8 @@ export default function AppHeader() {
       key: "login",
     },
     {
-      label: "Signin",
-      key: "signin",
+      label: "Signup",
+      key: "signup",
     },
   ];
 
