@@ -7,11 +7,11 @@ const Header = Layout.Header;
 export default function AppHeader() {
   const menuItems = [
     {
-      label: "Login",
+      label: <Link to="login">Login</Link>,
       key: "login",
     },
     {
-      label: "Signup",
+      label: <Link to="signup">Signup</Link>,
       key: "signup",
     },
   ];

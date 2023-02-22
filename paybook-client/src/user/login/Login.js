@@ -2,6 +2,7 @@ import "./Login.css";
 
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input } from "antd";
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const onFinish = (value) => {
@@ -29,6 +30,7 @@ export default function Login() {
         >
           <Input
             prefix={<UserOutlined className="site-form-item-icon" />}
+            size="large"
             placeholder="Username"
           />
         </Form.Item>
@@ -43,6 +45,7 @@ export default function Login() {
         >
           <Input
             prefix={<LockOutlined className="site-form-item-icon" />}
+            size="large"
             type="password"
             placeholder="Password"
           />
@@ -52,9 +55,7 @@ export default function Login() {
             <Checkbox>Remember me</Checkbox>
           </Form.Item>
 
-          <a className="login-form-forgot" href="">
-            Forgot password
-          </a>
+          <Link className="login-form-forgot">Forgot password</Link>
         </Form.Item>
 
         <Form.Item>
@@ -65,7 +66,7 @@ export default function Login() {
           >
             Log in
           </Button>
-          Or <a href="">register now!</a>
+          Or <Link to="/signup">register now!</Link>
         </Form.Item>
       </Form>
     );
