@@ -12,10 +12,11 @@ export default function App() {
   return (
     <Layout className="app-container">
       <AppHeader />
-      <Content className="app-content"></Content>
-      <div className="container">
-        <Outlet />
-      </div>
+      <Content className="app-content">
+        <div className="container">
+          <Outlet />
+        </div>
+      </Content>
     </Layout>
   );
 }

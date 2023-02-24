@@ -1,4 +1,5 @@
 import "./Signup.css";
+import { checkUsernameAvailability } from "../../api";
 
 import { Button, Form, Input } from "antd";
 import { Link } from "react-router-dom";
@@ -16,6 +17,7 @@ import {
 export default function Signup() {
   const [name, setName] = useState({});
   const [username, setUsername] = useState({});
+  const [email, setEmail] = useState({});
 
   const handleInputChange = (event, setFun, validationFun) => {
     const target = event.target;
@@ -65,7 +67,57 @@ export default function Signup() {
     }
   };
 
-  const validateUsernameAvailability = () => {};
+  const validateEmail = (email) => {
+    if (!email) {
+      return {
+        validateStatus: "error",
+        errorMsg: "Email may not be empty",
+      };
+    }
+
+    const EMAIL_REGEX = RegExp("[^@ ]+@[^@ ]+\\.[^@ ]+");
+    if (!EMAIL_REGEX.test(email)) {
+      return {
+        validateStatus: "error",
+        errorMsg: "Email not valid",
+      };
+    }
+
+    if (email.length > EMAIL_MAX_LENGTH) {
+      return {
+        validateStatus: "error",
+        errorMsg: `Email is too long (Maximum ${EMAIL_MAX_LENGTH} characters allowed)`,
+      };
+    }
+
+    return {
+      validateStatus: null,
+      errorMsg: null,
+    };
+  };
+
+  const validateUsernameAvailability = () => {
+    const usernameValue = username.value;
+    const usernameValidation = validateUsername(usernameValue);
+
+    if (usernameValidation.validateStatus === "error") {
+      setUsername({
+        value: usernameValue,
+        ...usernameValidation,
+      });
+      return;
+    }
+
+    setUsername({
+      value: usernameValue,
+      validateStatus: "validating",
+      errorMsg: null,
+    });
+
+    checkUsernameAvailability(usernameValue);
+  };
+
+  const validateEmailAvailability = () => {};
 
   return (
     <div className="signup-container">
@@ -104,14 +156,23 @@ export default function Signup() {
               }
             />
           </Form.Item>
-          <Form.Item label="Email" hasFeedback>
+          <Form.Item
+            label="Email"
+            hasFeedback
+            validateStatus={email.validateStatus}
+            help={email.errorMsg}
+          >
             <Input
               size="large"
               name="email"
+              type="email"
               autoComplete="off"
               placeholder="Your email"
-              onBlur={{}}
-              onChange={{}}
+              value={email.value}
+              onBlur={validateEmailAvailability}
+              onChange={(e) => {
+                handleInputChange(e, setEmail, validateEmail);
+              }}
             />
           </Form.Item>
           <Form.Item label="Password">
