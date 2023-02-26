@@ -2,8 +2,7 @@ package com.paybook.auth.payload;
 
 import com.paybook.user.domain.Role;
 import com.paybook.user.domain.User;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -12,6 +11,8 @@ import java.util.Set;
 
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@AllArgsConstructor
 public class SignUpRequest {
 
     @NotBlank
@@ -34,8 +35,9 @@ public class SignUpRequest {
     public User toUserWithRoles(Set<Role> roles) {
         User user = new User();
         user.setName(this.name);
+        user.setUsername(this.username);
         user.setEmail(this.email);
-        user.setPassword(this.getPassword());
+        user.setPassword(this.password);
         user.setRoles(roles);
 
         return user;

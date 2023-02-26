@@ -1,16 +1,9 @@
 package com.paybook.auth.controller;
 
-import com.paybook.auth.payload.JwtAuthenticationResponse;
-import com.paybook.auth.payload.LoginRequest;
 import com.paybook.auth.payload.SignUpRequest;
-import com.paybook.security.JwtTokenProvider;
 import com.paybook.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +18,7 @@ import java.net.URI;
 @RequestMapping("/api/auth")
 public class AuthController {
 
-    private final AuthenticationManager authenticationManager;
+    //private final AuthenticationManager authenticationManager;
 
     //private final UserRepository userRepository;
 
@@ -33,11 +26,10 @@ public class AuthController {
 
     private final PasswordEncoder passwordEncoder;
 
-    private final JwtTokenProvider tokenProvider;
+    //private final JwtTokenProvider tokenProvider;
 
     private final UserService userService;
-
-
+/*
     @PostMapping("/signin")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -52,6 +44,7 @@ public class AuthController {
         String jwt = tokenProvider.generateToken(authentication);
         return ResponseEntity.ok(new JwtAuthenticationResponse(jwt));
     }
+*/
 
     /*
         @PostMapping("/signup")

@@ -1,14 +1,18 @@
 import "./App.css";
 
 import AppHeader from "../common/AppHeader";
-import Login from "../user/login/Login";
 
-import { Layout } from "antd";
+import { Layout, notification } from "antd";
 import { Outlet } from "react-router-dom";
 
 const { Content } = Layout;
 
 export default function App() {
+  notification.config({
+    placement: "topRight",
+    top: 70,
+    duration: 0,
+  });
   return (
     <Layout className="app-container">
       <AppHeader />

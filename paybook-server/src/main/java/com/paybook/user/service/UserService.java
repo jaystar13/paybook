@@ -11,6 +11,7 @@ import com.paybook.user.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 
@@ -23,19 +24,32 @@ public class UserService {
     private final RoleRepository roleRepository;
 
     public Long registerUser(SignUpRequest signUpRequest) {
-        if (userRepository.existsByUsername(signUpRequest.getUsername())) {
-            throw new AuthException(ErrorCode.DUPLICATED_USERNAME);
-        }
+        checkUsername(signUpRequest.getUsername());
+        checkEmail(signUpRequest.getEmail());
 
-        if (userRepository.existsByEmail(signUpRequest.getEmail())) {
-            throw new AuthException(ErrorCode.DUPLICATED_EMAIL);
-        }
-
-        Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                .orElseThrow(() -> new AuthException(ErrorCode.USER_ROLE_NOT_SET));
+        Role userRole = findRoleByName(RoleName.ROLE_USER);
 
         User result = userRepository.save(signUpRequest.toUserWithRoles(Collections.singleton(userRole)));
 
         return result.getId();
+    }
+
+    private Role findRoleByName(RoleName roleName) {
+        return roleRepository.findByName(roleName)
+                .orElseThrow(() -> new AuthException(ErrorCode.USER_ROLE_NOT_SET));
+    }
+
+    @Transactional(readOnly = true)
+    public void checkUsername(String username) {
+        if (userRepository.existsByUsername(username)) {
+            throw new AuthException(ErrorCode.DUPLICATED_USERNAME);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public void checkEmail(String email) {
+        if (userRepository.existsByEmail(email)) {
+            throw new AuthException(ErrorCode.DUPLICATED_EMAIL);
+        }
     }
 }

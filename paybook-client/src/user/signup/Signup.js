@@ -1,8 +1,8 @@
 import "./Signup.css";
-import { checkUsernameAvailability } from "../../api";
+import { checkUsername, checkEmail, signup } from "../../api";
 
-import { Button, Form, Input } from "antd";
-import { Link } from "react-router-dom";
+import { Button, Form, Input, notification } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import {
   NAME_MIN_LENGTH,
@@ -18,6 +18,7 @@ export default function Signup() {
   const [name, setName] = useState({});
   const [username, setUsername] = useState({});
   const [email, setEmail] = useState({});
+  const [password, setPassword] = useState({});
 
   const handleInputChange = (event, setFun, validationFun) => {
     const target = event.target;
@@ -114,16 +115,137 @@ export default function Signup() {
       errorMsg: null,
     });
 
-    checkUsernameAvailability(usernameValue);
+    checkUsernameAvailable(usernameValue);
   };
 
-  const validateEmailAvailability = () => {};
+  const checkUsernameAvailable = async (usernameValue) => {
+    await checkUsername(usernameValue)
+      .then((res) => {
+        setUsername({
+          value: usernameValue,
+          validateStatus: "success",
+          errorMsg: null,
+        });
+      })
+      .catch((err) => {
+        const { data } = err.response;
+        setUsername({
+          value: usernameValue,
+          validateStatus: "error",
+          errorMsg: data.message ? data.message : null,
+        });
+      });
+  };
+
+  const validateEmailAvailability = () => {
+    const emailValue = email.value;
+    const emailValidation = validateEmail(emailValue);
+
+    if (emailValidation.validateStatus === "error") {
+      setEmail({
+        value: emailValue,
+        ...emailValidation,
+      });
+      return;
+    }
+
+    setEmail({
+      value: emailValue,
+      validateStatus: "validating",
+      errorMsg: null,
+    });
+
+    checkEmailAvailable(emailValue);
+  };
+
+  const checkEmailAvailable = async (emailValue) => {
+    await checkEmail(emailValue)
+      .then((res) => {
+        setEmail({
+          value: emailValue,
+          validateStatus: "success",
+          errorMsg: null,
+        });
+      })
+      .catch((err) => {
+        const { data } = err.response;
+        setEmail({
+          value: emailValue,
+          validateStatus: "error",
+          errorMsg: data.message ? data.message : null,
+        });
+      });
+  };
+
+  const validatePassword = (password) => {
+    if (password.length < PASSWORD_MIN_LENGTH) {
+      return {
+        validateStatus: "error",
+        errorMsg: `Password is too short (Minimum ${PASSWORD_MIN_LENGTH} characters needed.)`,
+      };
+    } else if (password.length > PASSWORD_MAX_LENGTH) {
+      return {
+        validationStatus: "error",
+        errorMsg: `Password is too long (Maximum ${PASSWORD_MAX_LENGTH} characters allowed.)`,
+      };
+    } else {
+      return {
+        validateStatus: "success",
+        errorMsg: null,
+      };
+    }
+  };
+
+  const isFormInvalid = () => {
+    return !(
+      name.validateStatus === "success" &&
+      username.validateStatus === "success" &&
+      email.validateStatus === "success" &&
+      password.validateStatus === "success"
+    );
+  };
+
+  const handleOnFinish = () => {
+    const signupRequest = {
+      name: name.value,
+      username: username.value,
+      email: email.value,
+      password: password.value,
+    };
+
+    signUpApi(signupRequest);
+  };
+
+  const navigate = useNavigate();
+
+  const signUpApi = async (signupRequest) => {
+    await signup(signupRequest)
+      .then((res) => {
+        notification.success({
+          message: "Paybook App",
+          description:
+            "Thank you! You're successfully registered. Please Login to continue.",
+        });
+        navigate("/login");
+      })
+      .catch((err) => {
+        notification.error({
+          message: "Paybook App",
+          description:
+            err.message || "Sorry! Something went wrong. Please try again!",
+        });
+      });
+  };
 
   return (
     <div className="signup-container">
       <h1 className="page-title">Sign Up</h1>
       <div className="signup-content">
-        <Form className="signup-form" layout="vertical">
+        <Form
+          className="signup-form"
+          layout="vertical"
+          onFinish={handleOnFinish}
+        >
           <Form.Item
             label="Full name"
             validateStatus={name.validateStatus}
@@ -175,14 +297,21 @@ export default function Signup() {
               }}
             />
           </Form.Item>
-          <Form.Item label="Password">
+          <Form.Item
+            label="Password"
+            validateStatus={password.validateStatus}
+            help={password.errorMsg}
+          >
             <Input
               size="large"
               name="password"
               type="password"
               autoComplete="off"
               placeholder="A password between 6 to 20 characters"
-              onChange={{}}
+              value={password.value}
+              onChange={(e) => {
+                handleInputChange(e, setPassword, validatePassword);
+              }}
             />
           </Form.Item>
           <Form.Item>
@@ -191,6 +320,7 @@ export default function Signup() {
               htmlType="submit"
               size="large"
               className="signup-form-button"
+              disabled={isFormInvalid()}
             >
               Sign up
             </Button>

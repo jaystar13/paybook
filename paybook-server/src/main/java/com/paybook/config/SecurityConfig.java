@@ -84,8 +84,8 @@ public class SecurityConfig {
                 .permitAll()
                 .antMatchers("/api/auth/**")
                 .permitAll()
-                .antMatchers("/api/user/checkUsernameAvailability",
-                        "/api/user/checkEmailAvailability")
+                .antMatchers("/api/user/checkUsername",
+                        "/api/user/checkEmail")
                 .permitAll()
                 .antMatchers(HttpMethod.GET,
                         "/api/paybook/**",
