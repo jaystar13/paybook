@@ -25,3 +25,6 @@ export const checkEmail = (email) => {
 
 export const signup = (signupRequest) =>
   client.post("/auth/signup", signupRequest);
+
+export const login = (loginRequest) =>
+  client.post("/auth/signin", loginRequest);

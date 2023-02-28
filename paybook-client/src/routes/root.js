@@ -4,6 +4,10 @@ import App from "../app/App";
 import Login from "../user/login/Login";
 import Signup from "../user/signup/Signup";
 
+const callbackLogin = () => {
+  console.log("callbackLogin");
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -12,7 +16,7 @@ const router = createBrowserRouter([
       { index: true, element: <Index /> },
       {
         path: "/login",
-        element: <Login />,
+        element: <Login callbackLogin={callbackLogin} />,
       },
       {
         path: "/signup",
