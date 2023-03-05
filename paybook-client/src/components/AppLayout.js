@@ -1,13 +1,11 @@
-import "./App.css";
-
-import AppHeader from "../common/AppHeader";
-
-import { Layout, notification } from "antd";
+import "./AppLayout.css";
 import { Outlet } from "react-router-dom";
+import { Layout, notification } from "antd";
+import AppHeader from "./AppHeader";
 
 const { Content } = Layout;
 
-export default function App() {
+const AppLayout = () => {
   notification.config({
     placement: "topRight",
     top: 70,
@@ -23,4 +21,6 @@ export default function App() {
       </Content>
     </Layout>
   );
-}
+};
+
+export default AppLayout;

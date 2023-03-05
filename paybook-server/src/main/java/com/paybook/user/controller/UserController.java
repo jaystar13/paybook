@@ -1,8 +1,12 @@
 package com.paybook.user.controller;
 
+import com.paybook.security.CurrentUser;
+import com.paybook.security.UserPrincipal;
+import com.paybook.user.payload.UserSummary;
 import com.paybook.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,5 +29,12 @@ public class UserController {
     public ResponseEntity<Void> checkEmail(@RequestParam(value = "email") String email) {
         userService.checkEmail(email);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasRole('USER')")
+    public UserSummary getCurrentUser(@CurrentUser UserPrincipal currentUser) {
+        UserSummary userSummary = new UserSummary(currentUser.getId(), currentUser.getUsername(), currentUser.getName());
+        return userSummary;
     }
 }

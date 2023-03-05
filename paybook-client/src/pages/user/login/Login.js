@@ -1,18 +1,16 @@
 import "./Login.css";
 
-import { login } from "../../api";
+import { useAuth } from "../../../context/Auth";
+import { login } from "../../../api";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, notification } from "antd";
-import { Link } from "react-router-dom";
-import { ACCESS_TOKEN } from "../../constants";
+import { Link, useNavigate } from "react-router-dom";
+import { ACCESS_TOKEN } from "../../../constants";
+import { useCallback, useEffect } from "react";
 
-export default function Login({ callbackLogin }) {
+export default function Login() {
+  const auth = useAuth();
   const [form] = Form.useForm();
-
-  const onFinish = (value) => {
-    console.log("Received values of form:", value);
-    handleSubmit();
-  };
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
@@ -21,11 +19,21 @@ export default function Login({ callbackLogin }) {
     });
   };
 
+  useEffect(() => {
+    console.log("auth", auth);
+  });
+
+  const navigate = useNavigate();
+
   const loginApi = async (loginRequest) => {
     await login(loginRequest)
       .then((res) => {
         localStorage.setItem(ACCESS_TOKEN, res.accessToken);
-        callbackLogin();
+        notification.success({
+          message: "Paybook App",
+          description: "You're successfully logged in.",
+        });
+        navigate("/");
       })
       .catch((err) => {
         if (err.response.status === 401) {
@@ -53,7 +61,7 @@ export default function Login({ callbackLogin }) {
         initialValues={{
           remember: true,
         }}
-        onFinish={onFinish}
+        onFinish={handleSubmit}
         autoComplete="off"
       >
         <Form.Item

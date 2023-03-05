@@ -1,10 +1,8 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./app/App";
-import { BrowserRouter as Router, RouterProvider } from "react-router-dom";
+import App from "./App";
 import { ConfigProvider } from "antd";
-import router from "./routes/root";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 const BASE_COLOR = "white";
@@ -24,7 +22,7 @@ root.render(
     }}
   >
     <React.StrictMode>
-      <RouterProvider router={router} />
+      <App />
     </React.StrictMode>
   </ConfigProvider>
 );

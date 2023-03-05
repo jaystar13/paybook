@@ -1,5 +1,5 @@
 import "./Signup.css";
-import { checkUsername, checkEmail, signup } from "../../api";
+import { checkUsername, checkEmail, signup } from "../../../api";
 
 import { Button, Form, Input, notification } from "antd";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,7 +12,7 @@ import {
   EMAIL_MAX_LENGTH,
   PASSWORD_MIN_LENGTH,
   PASSWORD_MAX_LENGTH,
-} from "../../constants";
+} from "../../../constants";
 
 export default function Signup() {
   const [name, setName] = useState({});
