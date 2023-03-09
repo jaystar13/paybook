@@ -1,10 +1,14 @@
-import "./AppHeader.css";
+import "./css/AppHeader.css";
 
 import { Layout, Menu } from "antd";
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
 const Header = Layout.Header;
 
 export default function AppHeader() {
+  useEffect(() => {
+    console.log("AppHeader");
+  }, []);
   const menuItems = [
     {
       label: <Link to="login">Login</Link>,

@@ -1,15 +1,15 @@
-import "./Login.css";
+import "./css/Login.css";
 
-import { useAuth } from "../../../context/Auth";
-import { login } from "../../../api";
+import { useAuth } from "../hooks/auth";
+import { login } from "../hooks/api";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, notification } from "antd";
 import { Link, useNavigate } from "react-router-dom";
-import { ACCESS_TOKEN } from "../../../constants";
-import { useCallback, useEffect } from "react";
+import { ACCESS_TOKEN } from "../constants";
+import { useCallback, useEffect, useState } from "react";
 
 export default function Login() {
-  const auth = useAuth();
+  const { setUser } = useAuth();
   const [form] = Form.useForm();
 
   const handleSubmit = () => {
@@ -18,10 +18,6 @@ export default function Login() {
       loginApi(loginRequest);
     });
   };
-
-  useEffect(() => {
-    console.log("auth", auth);
-  });
 
   const navigate = useNavigate();
 
@@ -33,7 +29,8 @@ export default function Login() {
           message: "Paybook App",
           description: "You're successfully logged in.",
         });
-        navigate("/");
+        setUser({ usernameOrEmail: loginRequest.usernameOrEmail });
+        navigate("/profile");
       })
       .catch((err) => {
         if (err.response.status === 401) {
