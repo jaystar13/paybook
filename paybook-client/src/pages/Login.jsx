@@ -2,6 +2,7 @@ import "./css/Login.css";
 
 import { useAuth } from "../hooks/auth";
 import { login } from "../hooks/api";
+import { useAuth as useAuth2 } from "../hooks/useAuth";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, notification } from "antd";
 import { Link, useNavigate } from "react-router-dom";
@@ -12,10 +13,13 @@ export default function Login() {
   const { setUser } = useAuth();
   const [form] = Form.useForm();
 
+  const { login } = useAuth2();
+
   const handleSubmit = () => {
     form.validateFields().then((values) => {
       const loginRequest = Object.assign({}, values);
-      loginApi(loginRequest);
+      //loginApi(loginRequest);
+      //login2(loginRequest);
     });
   };
 

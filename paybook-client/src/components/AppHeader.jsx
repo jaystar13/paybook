@@ -1,24 +1,31 @@
 import "./css/AppHeader.css";
 
 import { Layout, Menu } from "antd";
-import { Link } from "react-router-dom";
-import { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
+
 const Header = Layout.Header;
 
 export default function AppHeader() {
-  useEffect(() => {
-    console.log("AppHeader");
-  }, []);
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
+
   const menuItems = [
     {
-      label: <Link to="login">Login</Link>,
+      label: "Login",
       key: "login",
     },
     {
-      label: <Link to="signup">Signup</Link>,
+      label: "Signup",
       key: "signup",
     },
   ];
+
+  const handleOnClick = (path) => {
+    if (path) {
+      navigate(path);
+    }
+  };
 
   return (
     <Header className="app-header">
@@ -31,6 +38,7 @@ export default function AppHeader() {
           mode="horizontal"
           style={{ lineHeight: "64px" }}
           items={menuItems}
+          onClick={() => handleOnClick("login")}
         ></Menu>
       </div>
     </Header>
