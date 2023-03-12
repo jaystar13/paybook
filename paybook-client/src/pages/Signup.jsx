@@ -14,7 +14,7 @@ import {
   PASSWORD_MAX_LENGTH,
 } from "../constants";
 
-export default function Signup() {
+export const Signup = () => {
   const [name, setName] = useState({});
   const [username, setUsername] = useState({});
   const [email, setEmail] = useState({});
@@ -330,4 +330,4 @@ export default function Signup() {
       </div>
     </div>
   );
-}
+};

@@ -1,56 +1,43 @@
 import "./css/Login.css";
 
-import { useAuth } from "../hooks/auth";
-import { login } from "../hooks/api";
-import { useAuth as useAuth2 } from "../hooks/useAuth";
+import { useAuth } from "../hooks/useAuth";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, notification } from "antd";
-import { Link, useNavigate } from "react-router-dom";
-import { ACCESS_TOKEN } from "../constants";
-import { useCallback, useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
-export default function Login() {
-  const { setUser } = useAuth();
+export const Login = () => {
   const [form] = Form.useForm();
 
-  const { login } = useAuth2();
+  const { login } = useAuth();
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
       const loginRequest = Object.assign({}, values);
-      //loginApi(loginRequest);
-      //login2(loginRequest);
+      userLogin(loginRequest);
     });
   };
 
-  const navigate = useNavigate();
-
-  const loginApi = async (loginRequest) => {
-    await login(loginRequest)
-      .then((res) => {
-        localStorage.setItem(ACCESS_TOKEN, res.accessToken);
-        notification.success({
-          message: "Paybook App",
-          description: "You're successfully logged in.",
-        });
-        setUser({ usernameOrEmail: loginRequest.usernameOrEmail });
-        navigate("/profile");
-      })
-      .catch((err) => {
-        if (err.response.status === 401) {
-          notification.error({
-            message: "Paybook App",
-            description:
-              "Your Username or Password is incorrect. Please try again!",
-          });
-        } else {
-          notification.error({
-            message: "Paybook App",
-            description:
-              err.message || "Sorry! Something went wrong. Please try again!",
-          });
-        }
+  const userLogin = async (data) => {
+    const res = await login(data);
+    console.log("res.status", res.status);
+    if (res.status === 200) {
+      notification.success({
+        message: "Paybook App",
+        description: "You're successfully logged in.",
       });
+    } else if (res.status === 401) {
+      notification.error({
+        message: "Paybook App",
+        description:
+          "Your Username or Password is incorrect. Please try again!",
+      });
+    } else {
+      notification.error({
+        message: "Paybook App",
+        description:
+          res.message || "Sorry! Something went wrong. Please try again!",
+      });
+    }
   };
 
   const LoginForm = () => {
@@ -128,4 +115,4 @@ export default function Login() {
       </div>
     </div>
   );
-}
+};

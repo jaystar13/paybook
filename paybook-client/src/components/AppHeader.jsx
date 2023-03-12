@@ -6,20 +6,22 @@ import { useAuth } from "../hooks/useAuth";
 
 const Header = Layout.Header;
 
-export default function AppHeader() {
+export default function AppHeader({ menuItems }) {
   const navigate = useNavigate();
-  const { user, logout } = useAuth();
+  const { user } = useAuth();
 
-  const menuItems = [
-    {
-      label: "Login",
-      key: "login",
-    },
-    {
-      label: "Signup",
-      key: "signup",
-    },
-  ];
+  const appMenuItems = () => {
+    const logoutItem = {
+      label: "Logout",
+      key: "logout",
+    };
+
+    if (user) {
+      return [...menuItems, logoutItem];
+    }
+
+    return [...menuItems];
+  };
 
   const handleOnClick = (path) => {
     if (path) {
@@ -37,8 +39,8 @@ export default function AppHeader() {
           className="app-menu"
           mode="horizontal"
           style={{ lineHeight: "64px" }}
-          items={menuItems}
-          onClick={() => handleOnClick("login")}
+          items={appMenuItems()}
+          onClick={({ key }) => handleOnClick(key)}
         ></Menu>
       </div>
     </Header>

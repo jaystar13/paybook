@@ -6,12 +6,12 @@ import { useAuth } from "../hooks/useAuth";
 
 const { Content } = Layout;
 
-const HomeLayout = () => {
+export const HomeLayout = () => {
   const { user } = useAuth();
   const outlet = useOutlet();
 
   if (user) {
-    return <Navigate to="/profile" replace />;
+    return <Navigate to="/paybook/profile" replace />;
   }
 
   notification.config({
@@ -20,14 +20,23 @@ const HomeLayout = () => {
     duration: 5,
   });
 
+  const menuItems = [
+    {
+      label: "Login",
+      key: "login",
+    },
+    {
+      label: "Signup",
+      key: "signup",
+    },
+  ];
+
   return (
     <Layout className="app-container">
-      <AppHeader />
+      <AppHeader menuItems={menuItems} />
       <Content className="app-content">
         <div className="container">{outlet}</div>
       </Content>
     </Layout>
   );
 };
-
-export default HomeLayout;

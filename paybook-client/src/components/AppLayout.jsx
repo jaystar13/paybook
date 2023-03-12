@@ -1,14 +1,14 @@
 import "./css/AppLayout.css";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, useOutlet } from "react-router-dom";
 import { Layout, notification } from "antd";
 import AppHeader from "./AppHeader";
-import { useAuth } from "../hooks/auth";
-import { useEffect } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 const { Content } = Layout;
 
-const AppLayout = () => {
+export const AppLayout = () => {
   const { user } = useAuth();
+  const outlet = useOutlet();
 
   notification.config({
     placement: "topRight",
@@ -20,16 +20,23 @@ const AppLayout = () => {
     return <Navigate to="/" />;
   }
 
+  const menuItems = [
+    {
+      label: "Profile",
+      key: "profile",
+    },
+    {
+      label: "Logout",
+      key: "logout",
+    },
+  ];
+
   return (
     <Layout className="app-container">
-      <AppHeader />
+      <AppHeader menuItems={menuItems} />
       <Content className="app-content">
-        <div className="container">
-          <Outlet />
-        </div>
+        <div className="container">{outlet}</div>
       </Content>
     </Layout>
   );
 };
-
-export default AppLayout;

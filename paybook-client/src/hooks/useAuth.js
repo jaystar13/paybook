@@ -1,7 +1,6 @@
 import { createContext, useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { notification } from "antd";
 import { login as loginApi } from "./api";
 import { useLocalStorage } from "./useLocalStorage";
 import { ACCESS_TOKEN } from "../constants";
@@ -13,22 +12,18 @@ export const AuthProvider = ({ children, userData }) => {
   const navigate = useNavigate();
 
   const login = async (data) => {
-    await loginApi(data)
+    const result = await loginApi(data)
       .then((res) => {
         localStorage.setItem(ACCESS_TOKEN, res.accessToken);
 
-        setUser({ data });
-        navigate("/profile", { replace: true });
+        setUser(data);
+        navigate("/paybook/profile", { replace: true });
 
-        return {
-          status: 200,
-        };
+        return res;
       })
-      .catch((err) => {
-        return {
-          status: err.response.status,
-        };
-      });
+      .catch((err) => err);
+
+    return result;
   };
 
   const logout = () => {

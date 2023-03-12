@@ -1,3 +1,4 @@
+/*
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { AuthProvider, RequireAuth } from "./hooks/auth";
@@ -26,3 +27,4 @@ export default function App() {
     </AuthProvider>
   );
 }
+*/
