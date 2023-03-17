@@ -1,7 +1,7 @@
 import { createContext, useContext, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { login as loginApi } from "./api";
+import { login as loginApi, currentUser as getCurrentUser } from "./api";
 import { useLocalStorage } from "./useLocalStorage";
 import { ACCESS_TOKEN } from "../constants";
 
@@ -14,9 +14,10 @@ export const AuthProvider = ({ children, userData }) => {
   const login = async (data) => {
     const result = await loginApi(data)
       .then((res) => {
-        localStorage.setItem(ACCESS_TOKEN, res.accessToken);
-
-        setUser(data);
+        //localStorage.setItem(ACCESS_TOKEN, res.data.accessToken);
+        let result = {};
+        result[ACCESS_TOKEN] = res.data.accessToken;
+        setUser(result);
         navigate("/paybook/profile", { replace: true });
 
         return res;

@@ -19,7 +19,7 @@ export const Login = () => {
 
   const userLogin = async (data) => {
     const res = await login(data);
-    console.log("res.status", res.status);
+
     if (res.status === 200) {
       notification.success({
         message: "Paybook App",

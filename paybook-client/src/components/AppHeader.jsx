@@ -8,7 +8,7 @@ const Header = Layout.Header;
 
 export default function AppHeader({ menuItems }) {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
 
   const appMenuItems = () => {
     const logoutItem = {
@@ -40,7 +40,9 @@ export default function AppHeader({ menuItems }) {
           mode="horizontal"
           style={{ lineHeight: "64px" }}
           items={appMenuItems()}
-          onClick={({ key }) => handleOnClick(key)}
+          onClick={({ key }) =>
+            key === "logout" ? logout() : handleOnClick(key)
+          }
         ></Menu>
       </div>
     </Header>

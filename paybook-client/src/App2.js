@@ -7,6 +7,7 @@ import {
 import { AppLayout } from "./components/AppLayout";
 import { AuthLayout } from "./components/AuthLayout";
 import { HomeLayout } from "./components/HomeLayout";
+import { currentUser } from "./hooks/api";
 import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { Profile } from "./pages/Profile";
@@ -19,6 +20,12 @@ const getUserData = () =>
       resolve(user);
     }, 3000)
   );
+
+/*
+const getUserData = async () => {
+  const user = await currentUser();
+};
+*/
 
 export const router = createBrowserRouter(
   createRoutesFromElements(

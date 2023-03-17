@@ -30,8 +30,10 @@ export const login = (loginRequest) =>
   client.post("/auth/signin", loginRequest);
 
 export const currentUser = () => {
+  /*
   if (!localStorage.getItem(ACCESS_TOKEN)) {
     return Promise.reject("No access token set.");
   }
+  */
   return client.get("/user/me");
 };

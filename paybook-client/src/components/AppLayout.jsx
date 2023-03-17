@@ -25,10 +25,6 @@ export const AppLayout = () => {
       label: "Profile",
       key: "profile",
     },
-    {
-      label: "Logout",
-      key: "logout",
-    },
   ];
 
   return (
