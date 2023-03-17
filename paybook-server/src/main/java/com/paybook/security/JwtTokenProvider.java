@@ -56,6 +56,7 @@ public class JwtTokenProvider {
                     .setSigningKey(jwtSecret)
                     .build()
                     .parseClaimsJws(authToken);
+            return true;
         } catch (MalformedJwtException ex) {
             logger.error("Invalid JWT token");
         } catch (ExpiredJwtException ex) {
