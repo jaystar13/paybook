@@ -3,12 +3,14 @@ import "./css/Login.css";
 import { useAuth } from "../hooks/useAuth";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Form, Input, notification } from "antd";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export const Login = () => {
   const [form] = Form.useForm();
 
   const { login } = useAuth();
+
+  const navigate = useNavigate();
 
   const handleSubmit = () => {
     form.validateFields().then((values) => {
@@ -25,6 +27,8 @@ export const Login = () => {
         message: "Paybook App",
         description: "You're successfully logged in.",
       });
+
+      navigate("/paybook/profile", { replace: true });
     } else if (res.status === 401) {
       notification.error({
         message: "Paybook App",

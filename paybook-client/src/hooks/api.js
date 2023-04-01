@@ -30,10 +30,14 @@ export const login = (loginRequest) =>
   client.post("/auth/signin", loginRequest);
 
 export const currentUser = () => {
-  /*
   if (!localStorage.getItem(ACCESS_TOKEN)) {
     return Promise.reject("No access token set.");
   }
-  */
-  return client.get("/user/me");
+
+  return client.get("/user/me", {
+    headers: {
+      "Content-Type": "multipart/form-data",
+      Authorization: `Bearer ${localStorage.getItem(ACCESS_TOKEN)}`,
+    },
+  });
 };
