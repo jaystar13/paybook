@@ -1,8 +1,7 @@
 package com.paybook.user.domain;
 
 import com.paybook.common.domain.DateAudit;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -12,7 +11,9 @@ import javax.validation.constraints.Size;
 import java.util.HashSet;
 import java.util.Set;
 
-@Getter @Setter
+@Getter
+@Setter
+@NoArgsConstructor(access = AccessLevel.PUBLIC)
 @Entity
 @Table(name = "users", uniqueConstraints = {
         @UniqueConstraint(columnNames = {
@@ -51,11 +52,9 @@ public class User extends DateAudit {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public User() {
-
-    }
-
-    public User(String name, String username, String email, String password) {
+    @Builder
+    private User(Long id, String name, String username, String email, String password) {
+        this.id = id;
         this.name = name;
         this.username = username;
         this.email = email;
