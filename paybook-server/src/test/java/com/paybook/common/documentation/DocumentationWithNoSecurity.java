@@ -1,6 +1,7 @@
 package com.paybook.common.documentation;
 
 import com.paybook.user.repository.UserRepository;
+import com.paybook.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -15,14 +16,17 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 
-@Import(SecurityDocumentation.class)
+@Import(NoSecurityDocumentation.class)
 @ExtendWith(RestDocumentationExtension.class)
-public class DocumentationWithSecurity {
+public class DocumentationWithNoSecurity {
 
     protected MockMvc mockMvc;
 
     @MockBean
     protected UserRepository userRepository;
+
+    @MockBean
+    protected UserService userService;
 
     @BeforeEach
     public void setUp(WebApplicationContext webApplicationContext, RestDocumentationContextProvider restDocumentationContextProvider) {

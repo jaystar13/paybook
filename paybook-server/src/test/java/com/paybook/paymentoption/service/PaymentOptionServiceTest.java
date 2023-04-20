@@ -13,6 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -100,6 +102,35 @@ public class PaymentOptionServiceTest {
 
     }
 
+    @DisplayName("모든 결제방법을 조회한다.")
+    @Test
+    void findPaymentOptionAll() {
+        // given
+        PaymentOption salary = PaymentOption.builder()
+                .id(1L)
+                .title("급여계좌")
+                .bank("대한은행")
+                .note("급여계좌 테스트용")
+                .build();
+
+        PaymentOption loan = PaymentOption.builder()
+                .id(2L)
+                .title("대출계좌")
+                .bank("대한은행")
+                .note("대출계좌 테스트용")
+                .build();
+
+        List<PaymentOption> paymentOptions = Arrays.asList(salary, loan);
+
+        when(paymentOptionRepository.findAll()).thenReturn(paymentOptions);
+
+        // when
+        List<PaymentOptionResponse> paymentOptionResponses = paymentOptionService.findPaymentOptionAll();
+
+        // then
+        assertThat(paymentOptionResponses.size()).isEqualTo(paymentOptions.size());
+    }
+
     @DisplayName("결제방법을 수정한다.")
     @Test
     void updatePaymentOption() {
@@ -130,5 +161,15 @@ public class PaymentOptionServiceTest {
                 () -> assertThat(paymentOption.getNote()).isEqualTo(updateRequest.getNote())
         );
 
+    }
+
+    @DisplayName("결제방법을 단건 삭제한다.")
+    @Test
+    void deletePaymentOption() {
+        // when
+        paymentOptionService.deletePaymentOption(1L);
+
+        // then
+        verify(paymentOptionRepository).deleteById(1L);
     }
 }
