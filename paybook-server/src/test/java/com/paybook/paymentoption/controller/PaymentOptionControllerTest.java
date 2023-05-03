@@ -1,7 +1,9 @@
 package com.paybook.paymentoption.controller;
 
-import com.paybook.common.documentation.DocumentationWithNoSecurity;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.paybook.common.documentation.WithSecurity;
 import com.paybook.common.dto.WithMockCustomUser;
+import com.paybook.paymentoption.dto.PaymentOptionRequest;
 import com.paybook.paymentoption.dto.PaymentOptionResponse;
 import com.paybook.paymentoption.service.PaymentOptionService;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,38 +12,44 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(controllers = PaymentOptionController.class)
-class PaymentOptionControllerTest extends DocumentationWithNoSecurity {
+class PaymentOptionControllerTest extends WithSecurity {
 
     @MockBean
     private PaymentOptionService paymentOptionService;
 
+    private ObjectMapper objectMapper;
+
     @BeforeEach
-    public void setUp(WebApplicationContext webApplicationContext,
-                      RestDocumentationContextProvider restDocumentationContextProvider) {
-        super.setUp(webApplicationContext, restDocumentationContextProvider);
+    public void setUp(WebApplicationContext webApplicationContext) {
+        super.setUp(webApplicationContext);
+
+        objectMapper = new ObjectMapper();
     }
 
     @DisplayName("결제방법을 모두 조회한다.")
     @WithMockCustomUser
     @Test
-    void findPaymentOption() throws Exception {
+    void findPaymentOptions() throws Exception {
         // given
         List<PaymentOptionResponse> paymentOptionResponses = Arrays.asList(
-                new PaymentOptionResponse("title1", "bank1", "note1"),
-                new PaymentOptionResponse("title2", "bank2", "note2")
+                new PaymentOptionResponse(1L, "title1", "bank1", "note1"),
+                new PaymentOptionResponse(2L, "title2", "bank2", "note2")
         );
 
         given(paymentOptionService.findPaymentOptionAll()).willReturn(paymentOptionResponses);
@@ -50,8 +58,46 @@ class PaymentOptionControllerTest extends DocumentationWithNoSecurity {
         mockMvc.perform(get("/api/payment-options/all")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("payment-options/all"));
+                .andDo(print());
+    }
+
+    @DisplayName("결제방법을 아이디로 한건 조회한다.")
+    @WithMockCustomUser
+    @Test
+    void findPaymentOption() throws Exception {
+        // given
+        given(paymentOptionService.findPaymentOption(anyLong())).willReturn(
+                new PaymentOptionResponse(1L, "title1", "bank1", "note1").withId(1L)
+        );
+
+        // then
+        mockMvc.perform(get("/api/payment-options/{id}", 1L)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @DisplayName("결제방법을 생성한다.")
+    @WithMockCustomUser
+    @Test
+    void addPaymentOption() throws Exception {
+        // given
+        PaymentOptionRequest paymentOptionRequest = PaymentOptionRequest.builder()
+                .title("title")
+                .bank("bank")
+                .note("note")
+                .build();
+
+        given(paymentOptionService.save(any(), any())).willReturn(1L);
+
+        // then
+        mockMvc.perform(post("/api/payment-options")
+                        .with(csrf())
+                        .content(objectMapper.writeValueAsString(paymentOptionRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isCreated())
+                .andExpect(header().string("Location", "/api/payment-options/1"))
+                .andDo(print());
     }
 
 }
