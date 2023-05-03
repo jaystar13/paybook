@@ -1,10 +1,7 @@
 package com.paybook.paymentoption.dto;
 
 import com.paybook.paymentoption.domain.PaymentOption;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +10,9 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Getter
 public class PaymentOptionResponse {
+    @With(value = AccessLevel.PUBLIC)
+    private Long id;
+
     private String title;
 
     private String bank;
@@ -20,7 +20,8 @@ public class PaymentOptionResponse {
     private String note;
 
     public static PaymentOptionResponse of(PaymentOption paymentOption) {
-        return new PaymentOptionResponse(paymentOption.getTitle(), paymentOption.getBank(), paymentOption.getNote());
+        return new PaymentOptionResponse(paymentOption.getId(), paymentOption.getTitle(), paymentOption.getBank(),
+                paymentOption.getNote());
     }
 
     public static List<PaymentOptionResponse> listOf(List<PaymentOption> paymentOptions) {
@@ -33,3 +34,4 @@ public class PaymentOptionResponse {
         return paymentOptionResponses;
     }
 }
+

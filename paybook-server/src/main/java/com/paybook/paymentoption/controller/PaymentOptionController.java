@@ -1,13 +1,16 @@
 package com.paybook.paymentoption.controller;
 
+import com.paybook.paymentoption.dto.PaymentOptionRequest;
 import com.paybook.paymentoption.dto.PaymentOptionResponse;
 import com.paybook.paymentoption.service.PaymentOptionService;
+import com.paybook.security.CurrentUser;
+import com.paybook.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,5 +24,17 @@ public class PaymentOptionController {
     public ResponseEntity<List<PaymentOptionResponse>> findPaymentOptionAll() {
         List<PaymentOptionResponse> paymentOptionAll = paymentOptionService.findPaymentOptionAll();
         return ResponseEntity.ok(paymentOptionAll);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<PaymentOptionResponse> findPaymentOption(@PathVariable Long id) {
+        return ResponseEntity.ok(paymentOptionService.findPaymentOption(id));
+    }
+
+    @PostMapping
+    public ResponseEntity<Void> addPaymentOption(@CurrentUser User user,
+                                                 @RequestBody @Valid PaymentOptionRequest paymentOptionRequest) {
+        Long saveId = paymentOptionService.save(user, paymentOptionRequest);
+        return ResponseEntity.created(URI.create("/api/payment-options/" + saveId)).build();
     }
 }
