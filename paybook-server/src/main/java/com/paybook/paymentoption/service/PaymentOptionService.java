@@ -1,5 +1,6 @@
 package com.paybook.paymentoption.service;
 
+import com.paybook.common.exception.AuthException;
 import com.paybook.common.exception.EntityNotFoundException;
 import com.paybook.common.exception.ErrorCode;
 import com.paybook.paymentoption.domain.PaymentOption;
@@ -49,7 +50,13 @@ public class PaymentOptionService {
     }
 
     @Transactional
-    public void deletePaymentOption(Long id) {
+    public void deletePaymentOption(User user, Long id) {
+        PaymentOption paymentOption = findById(id);
+
+        if (user.isNotPossibleToAccessPaymentOption(paymentOption.getUserId())) {
+            throw new AuthException(ErrorCode.PAYMENT_OPTION_UNAUTHORIZED);
+        }
+
         paymentOptionRepository.deleteById(id);
     }
 }

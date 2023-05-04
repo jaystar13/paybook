@@ -6,7 +6,8 @@ public enum ErrorCode {
     USER_ROLE_NOT_SET(400, "AU_003", "User Role not set."),
 
     PAYMENT_OPTION_NOT_FOUND(400, "PO_001", "결재방법을 찾을 수 없습니다."),
-    ;
+
+    PAYMENT_OPTION_UNAUTHORIZED(403, "PO_002", "결제방법을 수정할 수 있는 권한이 없습니다.");;
 
     private final String code;
 

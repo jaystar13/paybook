@@ -60,4 +60,8 @@ public class User extends DateAudit {
         this.email = email;
         this.password = password;
     }
+
+    public boolean isNotPossibleToAccessPaymentOption(Long userId) {
+        return !this.id.equals(userId);
+    }
 }

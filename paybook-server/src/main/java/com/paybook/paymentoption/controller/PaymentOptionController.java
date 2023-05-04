@@ -37,4 +37,21 @@ public class PaymentOptionController {
         Long saveId = paymentOptionService.save(user, paymentOptionRequest);
         return ResponseEntity.created(URI.create("/api/payment-options/" + saveId)).build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updatePaymentOption(@CurrentUser User user,
+                                                    @PathVariable Long id,
+                                                    @RequestBody @Valid PaymentOptionRequest paymentOptionRequest) {
+        paymentOptionService.updatePaymentOption(user, id, paymentOptionRequest);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletePaymentOption(@CurrentUser User user,
+                                                    @PathVariable Long id) {
+        paymentOptionService.deletePaymentOption(user, id);
+
+        return ResponseEntity.noContent().build();
+    }
 }
