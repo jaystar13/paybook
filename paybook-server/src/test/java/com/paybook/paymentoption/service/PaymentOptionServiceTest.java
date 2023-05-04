@@ -1,6 +1,8 @@
 package com.paybook.paymentoption.service;
 
+import com.paybook.common.exception.AuthException;
 import com.paybook.common.exception.EntityNotFoundException;
+import com.paybook.common.exception.ErrorCode;
 import com.paybook.paymentoption.domain.PaymentOption;
 import com.paybook.paymentoption.domain.repository.PaymentOptionRepository;
 import com.paybook.paymentoption.dto.PaymentOptionRequest;
@@ -166,10 +168,42 @@ public class PaymentOptionServiceTest {
     @DisplayName("결제방법을 단건 삭제한다.")
     @Test
     void deletePaymentOption() {
+        // given
+        PaymentOption salary = PaymentOption.builder()
+                .id(2L)
+                .userId(1L)
+                .title("급여계좌")
+                .bank("대한은행")
+                .note("급여계좌 테스트용")
+                .build();
+
         // when
-        paymentOptionService.deletePaymentOption(1L);
+        when(paymentOptionRepository.findById(anyLong())).thenReturn(Optional.of(salary));
+
+        paymentOptionService.deletePaymentOption(user, 1L);
 
         // then
         verify(paymentOptionRepository).deleteById(1L);
+    }
+
+    @DisplayName("권한이 없는 유저가 결제방법을 삭제시 오류를 발생한다.")
+    @Test
+    void deletePaymentOptionException() {
+        // given
+        PaymentOption salary = PaymentOption.builder()
+                .id(1L)
+                .userId(2L)
+                .title("급여계좌")
+                .bank("대한은행")
+                .note("급여계좌 테스트용")
+                .build();
+
+        // when
+        when(paymentOptionRepository.findById(anyLong())).thenReturn(Optional.of(salary));
+
+        // then
+        assertThatThrownBy(() -> paymentOptionService.deletePaymentOption(user, 1L))
+                .isExactlyInstanceOf(AuthException.class)
+                .hasMessage(ErrorCode.PAYMENT_OPTION_UNAUTHORIZED.getMessage());
     }
 }

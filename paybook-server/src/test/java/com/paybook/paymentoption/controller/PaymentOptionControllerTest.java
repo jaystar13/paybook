@@ -21,8 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -97,6 +96,40 @@ class PaymentOptionControllerTest extends WithSecurity {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/api/payment-options/1"))
+                .andDo(print());
+    }
+
+    @DisplayName("결제방법을 수정한다.")
+    @WithMockCustomUser
+    @Test
+    void updatePaymentOption() throws Exception {
+        // given
+        PaymentOptionRequest updatePaymentOptionRequest = PaymentOptionRequest.builder()
+                .title("수정된 급여계좌")
+                .bank("대박은행")
+                .note("수정된 비고")
+                .build();
+
+        // then
+        mockMvc.perform(put("/api/payment-options/{id}", 1L)
+                        .with(csrf())
+                        .content(objectMapper.writeValueAsString(updatePaymentOptionRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @DisplayName("결제방법을 단건 삭제한다.")
+    @WithMockCustomUser
+    @Test
+    void deletePaymentOption() throws Exception {
+        // given
+        // when
+        // then
+        mockMvc.perform(delete("/api/payment-options/{id}", 1L)
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
                 .andDo(print());
     }
 
